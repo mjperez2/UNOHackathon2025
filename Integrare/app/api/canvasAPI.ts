@@ -177,3 +177,5 @@ export interface CanvasUser {
         .sort((a, b) => new Date(a.due_at).getTime() - new Date(b.due_at).getTime());
     }
   };
+
+  export default canvasAPI;
