@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Integrare",
+    "displayName": "Integrare",
     "slug": "Integrare",
     "version": "1.0.0",
     "orientation": "portrait",
