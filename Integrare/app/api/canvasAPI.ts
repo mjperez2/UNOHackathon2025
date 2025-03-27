@@ -31,6 +31,61 @@ export interface CanvasUser {
     posted_at: string;
   }
   
+  export interface StudyGroup {
+    id: string;
+    course_id: number;
+    name: string;
+    description: string;
+    members: string[];
+    schedule: StudyGroupSchedule[];
+    created_by: string;
+    created_at: string;
+  }
+  
+  export interface StudyGroupSchedule {
+    id: string;
+    group_id: string;
+    day_of_week: number; // 0-6 for Sunday-Saturday
+    start_time: string; // HH:mm format
+    end_time: string; // HH:mm format
+    location: string;
+    recurring: boolean;
+  }
+  
+  export interface ClassChannel {
+    id: string;
+    course_id: number;
+    name: string;
+    description: string;
+    announcements: ChannelAnnouncement[];
+    events: ChannelEvent[];
+    members: string[];
+    created_at: string;
+  }
+  
+  export interface ChannelAnnouncement {
+    id: string;
+    channel_id: string;
+    title: string;
+    content: string;
+    author: string;
+    created_at: string;
+    attachments: string[];
+  }
+  
+  export interface ChannelEvent {
+    id: string;
+    channel_id: string;
+    title: string;
+    description: string;
+    start_time: string;
+    end_time: string;
+    location: string;
+    type: 'exam' | 'assignment' | 'study_session' | 'other';
+    created_by: string;
+    created_at: string;
+  }
+  
   // Mock data
   const mockCourses: CanvasCourse[] = [
     {
@@ -128,6 +183,65 @@ export interface CanvasUser {
     }
   ];
   
+  const mockStudyGroups: StudyGroup[] = [
+    {
+      id: '1',
+      course_id: 1001,
+      name: 'CS I Study Group',
+      description: 'Weekly study sessions for CS I',
+      members: ['user1', 'user2', 'user3'],
+      schedule: [
+        {
+          id: '1',
+          group_id: '1',
+          day_of_week: 2, // Tuesday
+          start_time: '15:00',
+          end_time: '16:30',
+          location: 'Library Room 101',
+          recurring: true,
+        },
+      ],
+      created_by: 'user1',
+      created_at: '2024-03-20T10:00:00Z',
+    },
+  ];
+  
+  const mockClassChannels: ClassChannel[] = [
+    {
+      id: '1',
+      course_id: 1001,
+      name: 'CS I Discussion',
+      description: 'General discussion for CS I students',
+      announcements: [
+        {
+          id: '1',
+          channel_id: '1',
+          title: 'Midterm Review Session',
+          content: 'Join us for a review session before the midterm...',
+          author: 'user1',
+          created_at: '2024-03-20T15:00:00Z',
+          attachments: [],
+        },
+      ],
+      events: [
+        {
+          id: '1',
+          channel_id: '1',
+          title: 'Midterm Exam',
+          description: 'First midterm exam covering chapters 1-5',
+          start_time: '2024-03-25T09:00:00Z',
+          end_time: '2024-03-25T10:30:00Z',
+          location: 'Room 201',
+          type: 'exam',
+          created_by: 'user1',
+          created_at: '2024-03-20T15:00:00Z',
+        },
+      ],
+      members: ['user1', 'user2', 'user3'],
+      created_at: '2024-03-20T10:00:00Z',
+    },
+  ];
+  
   // Simulate network delay
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   
@@ -175,7 +289,81 @@ export interface CanvasUser {
       return mockAssignments
         .filter(a => new Date(a.due_at) > now)
         .sort((a, b) => new Date(a.due_at).getTime() - new Date(b.due_at).getTime());
-    }
+    },
+    
+    // New functions for study groups
+    getStudyGroups: async (courseId?: number): Promise<StudyGroup[]> => {
+      await delay(800);
+      return courseId 
+        ? mockStudyGroups.filter(group => group.course_id === courseId)
+        : mockStudyGroups;
+    },
+    
+    createStudyGroup: async (group: Omit<StudyGroup, 'id' | 'created_at'>): Promise<StudyGroup> => {
+      await delay(800);
+      const newGroup: StudyGroup = {
+        ...group,
+        id: Date.now().toString(),
+        created_at: new Date().toISOString(),
+      };
+      mockStudyGroups.push(newGroup);
+      return newGroup;
+    },
+    
+    updateStudyGroup: async (id: string, updates: Partial<StudyGroup>): Promise<StudyGroup> => {
+      await delay(800);
+      const index = mockStudyGroups.findIndex(group => group.id === id);
+      if (index === -1) throw new Error('Study group not found');
+      mockStudyGroups[index] = { ...mockStudyGroups[index], ...updates };
+      return mockStudyGroups[index];
+    },
+    
+    // New functions for class channels
+    getClassChannels: async (courseId?: number): Promise<ClassChannel[]> => {
+      await delay(800);
+      return courseId
+        ? mockClassChannels.filter(channel => channel.course_id === courseId)
+        : mockClassChannels;
+    },
+    
+    createClassChannel: async (channel: Omit<ClassChannel, 'id' | 'created_at' | 'announcements' | 'events'>): Promise<ClassChannel> => {
+      await delay(800);
+      const newChannel: ClassChannel = {
+        ...channel,
+        id: Date.now().toString(),
+        created_at: new Date().toISOString(),
+        announcements: [],
+        events: [],
+      };
+      mockClassChannels.push(newChannel);
+      return newChannel;
+    },
+    
+    addChannelAnnouncement: async (channelId: string, announcement: Omit<ChannelAnnouncement, 'id' | 'created_at'>): Promise<ChannelAnnouncement> => {
+      await delay(800);
+      const channel = mockClassChannels.find(c => c.id === channelId);
+      if (!channel) throw new Error('Channel not found');
+      const newAnnouncement: ChannelAnnouncement = {
+        ...announcement,
+        id: Date.now().toString(),
+        created_at: new Date().toISOString(),
+      };
+      channel.announcements.push(newAnnouncement);
+      return newAnnouncement;
+    },
+    
+    addChannelEvent: async (channelId: string, event: Omit<ChannelEvent, 'id' | 'created_at'>): Promise<ChannelEvent> => {
+      await delay(800);
+      const channel = mockClassChannels.find(c => c.id === channelId);
+      if (!channel) throw new Error('Channel not found');
+      const newEvent: ChannelEvent = {
+        ...event,
+        id: Date.now().toString(),
+        created_at: new Date().toISOString(),
+      };
+      channel.events.push(newEvent);
+      return newEvent;
+    },
   };
 
   export default canvasAPI;

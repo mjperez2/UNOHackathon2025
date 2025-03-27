@@ -7,12 +7,16 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen.tsx';
 import DashboardScreen from '../screens/DashboardScreen.tsx';
 import CourseDetailsScreen from '../screens/CourseDetailsScreen.tsx';
+import CareerScreen from '../screens/CareerScreen.tsx';
+import CollaborativeScreen from '../screens/CollaborativeScreen.tsx';
 
 // Define the type for our navigation parameters
 export type RootStackParamList = {
   Login: undefined;
   Dashboard: undefined;
   CourseDetails: { courseId: number; courseName: string };
+  Career: undefined;
+  Collaborative: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -40,12 +44,22 @@ export default function AppNavigation() {
         <Stack.Screen 
           name="Dashboard" 
           component={DashboardScreen} 
-          options={{ title: 'Integrare' }}
+          options={{ title: 'Dashboard' }}
         />
         <Stack.Screen 
           name="CourseDetails" 
           component={CourseDetailsScreen} 
           options={({ route }) => ({ title: route.params.courseName })}
+        />
+        <Stack.Screen 
+          name="Career" 
+          component={CareerScreen}
+          options={{ title: 'Career Development' }}
+        />
+        <Stack.Screen 
+          name="Collaborative" 
+          component={CollaborativeScreen}
+          options={{ title: 'Collaborative Learning' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

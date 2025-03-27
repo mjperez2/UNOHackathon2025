@@ -1,50 +1,126 @@
-# Welcome to your Expo app 👋
+# Integrare - Academic Collaboration Platform
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Overview
+Integrare is a specialized academic collaboration platform that integrates with Canvas to enhance student learning and career development. Built during a 3-day hackathon, this platform focuses on connecting students, facilitating collaborative learning, and providing career development resources.
 
-## Get started
+## Key Features
 
-1. Install dependencies
+### Core Features (Hackathon Focus)
+- **Career Development Focus**
+  - Alumni networking features
+  - Major-specific job/internship board
+  - Resume/portfolio sharing capabilities
+- **Collaborative Learning Tools**
+  - Shared document editing for class notes and projects
+  - Study flashcard creation and sharing
+  - Q&A forums for different subjects
+- **Academic Integration**
+  - Direct integration with Canvas
+  - Automated study group scheduling
+  - Class-specific channels with deadline tracking
 
+## Technical Stack
+- Frontend: React Native with Expo
+- Backend: Firebase (Authentication, Database, Cloud Functions)
+- APIs: Canvas LMS API, Google Calendar API
+- UI Libraries: React Native Paper, React Navigation
+
+## Project Structure
+```
+app/
+├── components/     # Reusable UI components
+├── screens/        # Main app screens
+├── navigation/     # Navigation configuration
+├── api/           # API services (Canvas, etc.)
+├── firebase/      # Firebase configuration
+├── hooks/         # Custom React hooks
+├── utils/         # Helper functions
+├── types/         # TypeScript type definitions
+└── _layout.tsx    # Root layout component
+```
+
+## Getting Started
+
+1. Install dependencies:
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. Set up environment variables:
    ```bash
-    npx expo start
+   cp .env.example .env
+   ```
+   Fill in your Canvas API credentials and Firebase configuration.
+
+3. Start the development server:
+   ```bash
+   npx expo start
    ```
 
-In the output, you'll find options to open the app in a
-
+You can then run the app in:
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- [Expo Go](https://expo.dev/go)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Development Guidelines
 
-## Get a fresh project
+### Code Style
+- Use TypeScript for type safety
+- Follow React Native best practices
+- Implement proper error handling
+- Write clean, documented code
 
-When you're ready, run:
+### Git Workflow
+- Create feature branches from `main`
+- Use conventional commits
+- Submit PRs for review
 
-```bash
-npm run reset-project
-```
+## Team Structure
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Person 1: Project Manager & Full-Stack Developer
+- Overall project coordination
+- Frontend architecture
+- Backend/Firebase setup
+- Canvas API integration management
 
-## Learn more
+### Person 2: Frontend Developer & UI/UX Specialist
+- Component development
+- UI/UX design
+- Styling and animations
+- Asset creation
 
-To learn more about developing your project with Expo, look at the following resources:
+### Person 3: Backend Developer & Feature Specialist
+- Database structure
+- Authentication system
+- Feature implementation
+- Testing
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Development Timeline
 
-## Join the community
+### Day 1: Foundation Building
+- Project setup and architecture
+- Canvas API integration
+- Basic UI components
+- Authentication system
 
-Join our community of developers creating universal apps.
+### Day 2: Feature Implementation
+- Core features development
+- Integration testing
+- UI/UX refinement
+- Backend services
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Day 3: Polish & Presentation
+- Bug fixes and optimization
+- Final testing
+- Demo preparation
+- Documentation
+
+## Learn More
+- [Expo documentation](https://docs.expo.dev/)
+- [React Native Paper](https://callstack.github.io/react-native-paper/)
+- [Canvas LMS API](https://canvas.instructure.com/doc/api/)
+- [Firebase Documentation](https://firebase.google.com/docs)
+
+## License
+MIT License - See LICENSE file for details

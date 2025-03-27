@@ -6,21 +6,17 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  ScrollView
 } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation';
+import { useRouter } from 'expo-router';
 import { canvasAPI, CanvasCourse, CanvasAssignment } from '../api/canvasAPI';
+import { Button, Card } from 'react-native-paper';
 
-type DashboardScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Dashboard'>;
-
-type Props = {
-  navigation: DashboardScreenNavigationProp;
-};
-
-export default function DashboardScreen({ navigation }: Props) {
+export default function DashboardScreen() {
+  const router = useRouter();
   const [courses, setCourses] = useState<CanvasCourse[]>([]);
-  const [upcomingAssignments, setUpcomingAssignments] = useState<CanvasAssignment[]>([]);
+  const [assignments, setAssignments] = useState<CanvasAssignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -35,11 +31,10 @@ export default function DashboardScreen({ navigation }: Props) {
         canvasAPI.getCourses(),
         canvasAPI.getUpcomingAssignments()
       ]);
-      
       setCourses(coursesData);
-      setUpcomingAssignments(assignmentsData.slice(0, 5)); // Show only top 5
+      setAssignments(assignmentsData);
     } catch (error) {
-      console.error('Failed to load dashboard data:', error);
+      console.error('Error loading dashboard data:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -52,163 +47,150 @@ export default function DashboardScreen({ navigation }: Props) {
   };
 
   const formatDueDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
+    return new Date(dateString).toLocaleDateString();
   };
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.centered}>
         <ActivityIndicator size="large" color="#4299E1" />
-        <Text style={styles.loadingText}>Loading your dashboard...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh}>
-        <Text style={styles.sectionTitle}>Upcoming Assignments</Text>
-        
-        {upcomingAssignments.length > 0 ? (
-          <View style={styles.assignmentsContainer}>
-            {upcomingAssignments.map((assignment) => (
-              <View key={assignment.id} style={styles.assignmentCard}>
-                <Text style={styles.assignmentTitle}>{assignment.name}</Text>
-                <Text style={styles.courseName}>
-                  {courses.find(c => c.id === assignment.course_id)?.name || 'Unknown Course'}
-                </Text>
-                <Text style={styles.dueDate}>Due: {formatDueDate(assignment.due_at)}</Text>
-              </View>
-            ))}
-          </View>
-        ) : (
-          <Text style={styles.noContent}>No upcoming assignments</Text>
-        )}
-        
-        <Text style={styles.sectionTitle}>My Courses</Text>
-        
+    <ScrollView 
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      {/* Feature Navigation Cards */}
+      <View style={styles.featureCards}>
+        <Card style={styles.featureCard} onPress={() => router.push('/career')}>
+          <Card.Content>
+            <Text style={styles.featureTitle}>Career Development</Text>
+            <Text style={styles.featureSubtitle}>Connect with alumni and find opportunities</Text>
+          </Card.Content>
+        </Card>
+
+        <Card style={styles.featureCard} onPress={() => router.push('/collaborative')}>
+          <Card.Content>
+            <Text style={styles.featureTitle}>Collaborative Learning</Text>
+            <Text style={styles.featureSubtitle}>Study tools and shared resources</Text>
+          </Card.Content>
+        </Card>
+      </View>
+
+      {/* Courses Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Your Courses</Text>
         <FlatList
           data={courses}
-          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.courseCard}
-              onPress={() => navigation.navigate('CourseDetails', { 
-                courseId: item.id, 
-                courseName: item.name 
+              onPress={() => router.push({
+                pathname: '/screens/CourseDetailsScreen',
+                params: {
+                  courseId: item.id,
+                  courseName: item.name
+                }
               })}
             >
-              <Text style={styles.courseCode}>{item.course_code}</Text>
               <Text style={styles.courseName}>{item.name}</Text>
-              <View style={styles.cardFooter}>
-                <Text style={styles.viewDetails}>View details →</Text>
-              </View>
             </TouchableOpacity>
           )}
-          contentContainerStyle={styles.listContainer}
+          keyExtractor={item => item.id.toString()}
         />
-      </RefreshControl>
-    </View>
+      </View>
+
+      {/* Upcoming Assignments Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Upcoming Assignments</Text>
+        {assignments.map(assignment => (
+          <Card key={assignment.id} style={styles.assignmentCard}>
+            <Card.Content>
+              <Text style={styles.assignmentTitle}>{assignment.name}</Text>
+              <Text style={styles.assignmentCourse}>
+                {courses.find(c => c.id === assignment.course_id)?.name || 'Unknown Course'}
+              </Text>
+              <Text style={styles.assignmentDue}>Due: {formatDueDate(assignment.due_at)}</Text>
+            </Card.Content>
+          </Card>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#f5f5f5',
   },
-  loadingContainer: {
+  centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loadingText: {
-    marginTop: 16,
-    color: '#718096',
-    fontSize: 16,
+  featureCards: {
+    padding: 16,
+    gap: 16,
+  },
+  featureCard: {
+    marginBottom: 8,
+  },
+  featureTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  featureSubtitle: {
+    fontSize: 14,
+    color: '#666',
+  },
+  section: {
+    padding: 16,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 20,
     marginBottom: 12,
-    color: '#2D3748',
-  },
-  assignmentsContainer: {
-    marginBottom: 10,
-  },
-  assignmentCard: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  assignmentTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2D3748',
-    marginBottom: 4,
-  },
-  dueDate: {
-    fontSize: 14,
-    color: '#E53E3E',
-    marginTop: 4,
-  },
-  noContent: {
-    textAlign: 'center',
-    color: '#718096',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  listContainer: {
-    paddingBottom: 20,
   },
   courseCard: {
     backgroundColor: '#fff',
-    borderRadius: 8,
     padding: 16,
-    marginBottom: 12,
+    borderRadius: 8,
+    marginRight: 12,
+    width: 200,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
-  },
-  courseCode: {
-    fontSize: 14,
-    color: '#718096',
-    marginBottom: 4,
+    elevation: 3,
   },
   courseName: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2D3748',
+    fontWeight: '500',
+  },
+  assignmentCard: {
+    marginBottom: 8,
+  },
+  assignmentTitle: {
+    fontSize: 16,
+    fontWeight: '500',
     marginBottom: 4,
   },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+  assignmentCourse: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
   },
-  viewDetails: {
+  assignmentDue: {
+    fontSize: 14,
     color: '#4299E1',
-    fontWeight: 'bold',
   },
 });
