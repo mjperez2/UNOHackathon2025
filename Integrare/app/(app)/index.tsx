@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Text, Card, Button } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
@@ -7,12 +7,12 @@ export default function DashboardScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.welcomeText}>Welcome to Integrare</Text>
         
         <Card style={styles.card}>
-          <Card.Content>
+          <Card.Content style={styles.cardContent}>
             <Text style={styles.cardTitle}>Career Development</Text>
             <Text>Access career resources, alumni network, and job board</Text>
             <Button 
@@ -26,7 +26,7 @@ export default function DashboardScreen() {
         </Card>
 
         <Card style={styles.card}>
-          <Card.Content>
+          <Card.Content style={styles.cardContent}>
             <Text style={styles.cardTitle}>Collaborative Learning</Text>
             <Text>Join study groups, access shared resources, and participate in discussions</Text>
             <Button 
@@ -39,7 +39,7 @@ export default function DashboardScreen() {
           </Card.Content>
         </Card>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -65,9 +65,14 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 16,
+    backgroundColor: '#ffffff',
+  },
+  cardContent: {
+    backgroundColor: '#ffffff',
   },
   button: {
     marginTop: 16,
   },
 });
+ 
  
