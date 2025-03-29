@@ -121,14 +121,17 @@ export default function DashboardScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Your Courses</Text>
         {courses.map(course => (
-          <View key={course.id} style={styles.courseContainer}>
+          <Pressable
+            key={course.id}
+            style={styles.courseContainer}
+            onHoverIn={() => loadCourseDetails(course)}
+            onHoverOut={() => setHoveredCourseId(null)}
+          >
             <Pressable
               style={[
                 styles.courseCard,
                 hoveredCourseId === course.id && styles.courseCardHovered
               ]}
-              onHoverIn={() => loadCourseDetails(course)}
-              onHoverOut={() => setHoveredCourseId(null)}
               onPress={() => router.push({
                 pathname: '/course/[id]',
                 params: {
@@ -178,7 +181,7 @@ export default function DashboardScreen() {
                 </View>
               </View>
             )}
-          </View>
+          </Pressable>
         ))}
       </View>
     </ScrollView>
@@ -213,6 +216,7 @@ const styles = StyleSheet.create({
   },
   section: {
     padding: 16,
+    paddingBottom: 400,
   },
   sectionTitle: {
     fontSize: 20,

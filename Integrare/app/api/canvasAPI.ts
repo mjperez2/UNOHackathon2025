@@ -168,7 +168,25 @@ export interface CanvasUser {
       id:2006,
       course_id: 1004,
       name:"Project 1: Create a Group Chat App",
-      description: "Implement",
+      description: "Implement a group chat application using multithreading and Client-Server architecture.",
+      due_at: "2025-03-30T23:59:59Z",
+      points_possible: 100,
+      submission_types:["online_upload"]
+    },
+    {
+      id:2007,
+      course_id: 1004,
+      name:"Project 2: Create a Multiplayer Game",
+      description: "Implement a Multiplayer Game using multithreading which allows at least 2-4 players.",
+      due_at: "2025-03-30T23:59:59Z",
+      points_possible: 100,
+      submission_types:["online_upload"]
+    },
+    {
+      id:2008,
+      course_id: 1004,
+      name:"Project 3: Wireshark",
+      description: "Using Wireshark, capture packets and analyze the data.",
       due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types:["online_upload"]
