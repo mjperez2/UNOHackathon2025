@@ -27,7 +27,7 @@ export default function Layout() {
           }} 
         />
         <Stack.Screen 
-          name="screens/CourseDetailsScreen" 
+          name="course/[id]" 
           options={{ 
             title: 'Course Details',
             headerShown: true 

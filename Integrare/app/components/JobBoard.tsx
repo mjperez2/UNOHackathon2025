@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Card, Text, Button, Surface, TextInput } from 'react-native-paper';
+import { View, StyleSheet, FlatList, TextInput } from 'react-native';
+import { Card, Text, Button, Surface } from 'react-native-paper';
 
 interface JobListing {
   id: string;
@@ -150,9 +150,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 8,
     elevation: 2,
+    backgroundColor: '#fff',
   },
   searchInput: {
     padding: 8,
+    fontSize: 16,
   },
   filterContainer: {
     flexDirection: 'row',

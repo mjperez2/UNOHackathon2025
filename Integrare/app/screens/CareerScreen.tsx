@@ -1,55 +1,45 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { Text } from 'react-native-paper';
 
 // Import our components
 import AlumniNetwork from '../components/AlumniNetwork';
 import JobBoard from '../components/JobBoard';
 import Portfolio from '../components/Portfolio';
 
-const Tab = createMaterialTopTabNavigator();
-
 export default function CareerScreen() {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabLabel,
-        tabBarIndicatorStyle: styles.tabIndicator,
-      }}
-    >
-      <Tab.Screen 
-        name="AlumniNetwork" 
-        component={AlumniNetwork}
-        options={{ title: 'Alumni Network' }}
-      />
-      <Tab.Screen 
-        name="JobBoard" 
-        component={JobBoard}
-        options={{ title: 'Job Board' }}
-      />
-      <Tab.Screen 
-        name="Portfolio" 
-        component={Portfolio}
-        options={{ title: 'Portfolio' }}
-      />
-    </Tab.Navigator>
+    <ScrollView style={styles.container}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Job Board</Text>
+        <JobBoard />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Alumni Network</Text>
+        <AlumniNetwork />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Portfolio</Text>
+        <Portfolio />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: '#fff',
-    elevation: 0,
-    shadowOpacity: 0,
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
   },
-  tabLabel: {
-    textTransform: 'none',
-    fontSize: 14,
-    fontWeight: '500',
+  section: {
+    padding: 16,
   },
-  tabIndicator: {
-    backgroundColor: '#4299E1',
-    height: 3,
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#2D3748',
   },
 }); 

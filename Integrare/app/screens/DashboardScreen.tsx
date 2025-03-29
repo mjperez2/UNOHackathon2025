@@ -93,10 +93,10 @@ export default function DashboardScreen() {
             <TouchableOpacity
               style={styles.courseCard}
               onPress={() => router.push({
-                pathname: '/screens/CourseDetailsScreen',
+                pathname: '/course/[id]',
                 params: {
-                  courseId: item.id,
-                  courseName: item.name
+                  id: item.id,
+                  name: item.name
                 }
               })}
             >

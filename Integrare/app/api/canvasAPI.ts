@@ -90,28 +90,28 @@ export interface CanvasUser {
   const mockCourses: CanvasCourse[] = [
     {
       id: 1001,
-      name: "Computer Science I",
-      course_code: "CSCI 1583",
-      start_at: "2025-01-10T08:00:00Z",
-      end_at: "2025-05-15T23:59:59Z"
-    },
-    {
-      id: 1002,
       name: "Data Structures",
       course_code: "CSCI 2121",
       start_at: "2025-01-10T08:00:00Z",
       end_at: "2025-05-15T23:59:59Z"
     },
     {
-      id: 1003,
+      id: 1002,
       name: "Machine Learning",
+      course_code: "CSCI 3000",
+      start_at: "2025-01-10T08:00:00Z",
+      end_at: "2025-05-15T23:59:59Z"
+    },
+    {
+      id: 1003,
+      name: "Operating Systems",
       course_code: "CSCI 4525",
       start_at: "2025-01-10T08:00:00Z",
       end_at: "2025-05-15T23:59:59Z"
     },
     {
       id: 1004,
-      name: "Database Management",
+      name: "Networking",
       course_code: "CSCI 4000",
       start_at: "2025-01-10T08:00:00Z",
       end_at: "2025-05-15T23:59:59Z"
