@@ -179,7 +179,7 @@ export interface CanvasUser {
     {
       id: 3001,
       course_id: 1001,
-      title: "Welcome to Computer Science I",
+      title: "Welcome to Data Structures!",
       message: "Welcome to the course! Please review the syllabus and complete the intro survey.",
       posted_at: "2025-01-10T09:00:00Z"
     },
