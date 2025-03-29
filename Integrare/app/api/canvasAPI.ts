@@ -122,8 +122,8 @@ export interface CanvasUser {
     {
       id: 2001,
       course_id: 1001,
-      name: "Assignment 1: Variables and Control Flow",
-      description: "Implement basic control flow structures in Java.",
+      name: "Homework 1: Asymptotic Analysis",
+      description: "Perform a detailed analysis of the algorithm in the following code snippet:",
       due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload"]
@@ -131,8 +131,8 @@ export interface CanvasUser {
     {
       id: 2002,
       course_id: 1001,
-      name: "Assignment 2: Classes and Objects",
-      description: "Create classes with proper encapsulation.",
+      name: "Homework 2: Lists and Iterators",
+      description: "Write an implementation of a singly-linked list and a partial implementation iterator class.",
       due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload"]
@@ -140,8 +140,8 @@ export interface CanvasUser {
     {
       id: 2003,
       course_id: 1002,
-      name: "Project 1: Linked Lists",
-      description: "Implement a doubly-linked list with iterators.",
+      name: "Homework 1: ELIZA prototype",
+      description: "Implement a prototype of ELIZA, a simple chatbot that uses pattern matching to simulate a psychotherapist.",
       due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload", "online_text_entry"]
@@ -149,8 +149,8 @@ export interface CanvasUser {
     {
       id: 2004,
       course_id: 1002,
-      name: "Project 2: Binary Search Trees",
-      description: "Implement a binary search tree with common operations.",
+      name: "Homework 2: Linear Regression",
+      description: "Implement linear regression from scratch.",
       due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload"]
@@ -158,8 +158,8 @@ export interface CanvasUser {
     {
       id: 2005,
       course_id: 1003,
-      name: "Lab 1: Linear Regression",
-      description: "Implement linear regression from scratch.",
+      name: "Homework 1: Create a shell",
+      description: "Create a shell in C that supports basic commands like ls, cd, and pwd.",
       due_at: "2025-03-30T23:59:59Z",
       points_possible: 50,
       submission_types: ["online_upload", "online_text_entry"]
@@ -182,15 +182,6 @@ export interface CanvasUser {
       points_possible: 100,
       submission_types:["online_upload"]
     },
-    {
-      id:2008,
-      course_id: 1004,
-      name:"Project 3: Wireshark",
-      description: "Using Wireshark, capture packets and analyze the data.",
-      due_at: "2025-03-30T23:59:59Z",
-      points_possible: 100,
-      submission_types:["online_upload"]
-    }
   ];
   
   const mockAnnouncements: CanvasAnnouncement[] = [
@@ -204,10 +195,24 @@ export interface CanvasUser {
     {
       id: 3002,
       course_id: 1002,
-      title: "Project Teams",
-      message: "Please form teams of 2-3 students for the semester project by next week.",
+      title: "Welcome to Machine Learning!",
+      message: "Welcome to the course! Please review the syllabus and complete the intro survey.",
       posted_at: "2025-01-12T10:30:00Z"
-    }
+    },
+    {
+      id: 3003,
+      course_id: 1003,
+      title: "Welcome to Operating Systems!",
+      message: "Welcome to the course! Please review the syllabus and complete the intro survey.",
+      posted_at: "2025-01-12T10:30:00Z",
+    },
+    {
+      id: 3004,
+      course_id: 1004,
+      title: "Welcome to Networking!",
+      message: "Welcome to the course! Please review the syllabus and complete the intro survey.",
+      posted_at: "2025-01-12T10:30:00Z",
+    },
   ];
   
   const mockStudyGroups: StudyGroup[] = [

@@ -15,18 +15,18 @@ interface Document {
 const mockDocuments: Document[] = [
   {
     id: '1',
-    title: 'CS 101 Notes - Week 1',
-    course: 'Introduction to Computer Science',
+    title: 'CS 2125 Notes - Week 1',
+    course: 'CSC 2125 - Introduction to Asymptotic Analysis',
     lastModified: '2024-03-20T15:30:00',
-    sharedWith: ['John Doe', 'Jane Smith'],
+    sharedWith: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Jane Doe'],
     owner: 'Alice Johnson',
   },
   {
     id: '2',
-    title: 'Project Proposal',
-    course: 'Software Engineering',
+    title: 'Project Proposal Ideas',
+    course: 'CSCI 3000 - Machine Learning',
     lastModified: '2024-03-19T10:15:00',
-    sharedWith: ['Bob Wilson'],
+    sharedWith: ['Bob Wilson', 'Johnny Depp', 'Mike Wazowski'],
     owner: 'Charlie Brown',
   },
   // Add more mock documents as needed

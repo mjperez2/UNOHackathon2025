@@ -2,29 +2,32 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Surface } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
+import { useRouter } from 'expo-router';
 
-type LoginScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, 'Login'>;
-};
+const LoginScreen = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
-  const [schoolUrl, setSchoolUrl] = useState<string>('');
-  const [apiKey, setApiKey] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-
-  const handleLogin = async (): Promise<void> => {
+  const handleLogin = async () => {
     setLoading(true);
     setError('');
 
     try {
-      // TODO: Implement Canvas authentication
-      // For now, we'll just navigate to Home
-      navigation.replace('Home');
+      // Simple validation
+      if (!username || !password) {
+        throw new Error('Please enter both username and password');
+      }
+
+      // For demo purposes, accept any non-empty username/password
+      // In a real app, you would validate against your backend
+      
+      // Navigate to dashboard
+      router.replace('/(app)');
     } catch (err) {
-      setError('Failed to authenticate with Canvas. Please check your credentials.');
+      setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -40,24 +43,23 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
         <View style={styles.formContainer}>
           <TextInput
-            label="School Canvas URL"
-            value={schoolUrl}
-            onChangeText={setSchoolUrl}
+            label="Username"
+            value={username}
+            onChangeText={setUsername}
             mode="outlined"
             style={styles.input}
-            placeholder="https://your-school.instructure.com"
+            placeholder="Enter your username"
             autoCapitalize="none"
-            keyboardType="url"
           />
 
           <TextInput
-            label="Canvas API Key"
-            value={apiKey}
-            onChangeText={setApiKey}
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
             mode="outlined"
             style={styles.input}
             secureTextEntry
-            placeholder="Enter your Canvas API key"
+            placeholder="Enter your password"
           />
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -68,12 +70,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             loading={loading}
             style={styles.button}
           >
-            Login with Canvas
+            Login
           </Button>
 
           <Button
             mode="text"
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => router.replace('/(app)')}
             style={styles.button}
           >
             Skip Login (Demo Mode)
@@ -95,6 +97,7 @@ const styles = StyleSheet.create({
     padding: 16,
     elevation: 4,
     borderRadius: 8,
+    backgroundColor: '#ffffff',
   },
   logoContainer: {
     alignItems: 'center',
@@ -115,6 +118,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 16,
+    backgroundColor: '#ffffff',
   },
   button: {
     marginTop: 8,

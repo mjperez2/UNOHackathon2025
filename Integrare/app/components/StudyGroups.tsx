@@ -1,166 +1,221 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ScrollView } from 'react-native';
-import { Card, Text, Button, FAB, TextInput, List, Surface } from 'react-native-paper';
-import { canvasAPI, StudyGroup, StudyGroupSchedule } from '../api/canvasAPI';
+import React, { useState } from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Card, Text, Button, FAB, TextInput, Avatar, Surface } from 'react-native-paper';
 
-const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+interface StudyGroup {
+  id: string;
+  name: string;
+  course: string;
+  description: string;
+  members: string[];
+  meetingTime: string;
+  location: string;
+  capacity: number;
+  tags: string[];
+}
 
-export default function StudyGroups({ courseId }: { courseId?: number }) {
-  const [groups, setGroups] = useState<StudyGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+// Mock data - replace with Firebase data later
+const mockStudyGroups: StudyGroup[] = [
+  {
+    id: '1',
+    name: 'Data Structures Study Squad',
+    course: 'CSCI 2125 - Introduction to Data Structures',
+    description: 'Weekly study sessions focusing on programming fundamentals and algorithms.',
+    members: ['Alice Johnson', 'Bob Wilson', 'Charlie Brown'],
+    meetingTime: 'Tuesdays 4:00 PM',
+    location: 'Library Room 417',
+    capacity: 6,
+    tags: ['Programming', 'Algorithms', 'Beginners'],
+  },
+  {
+    id: '2',
+    name: 'Machine Learning Study Group',
+    course: 'CSCI 3000 - Machine Learning',
+    description: 'Intensive study group for machine learning concepts and applications.',
+    members: ['David Smith', 'Eva Martinez', 'Frank Lee'],
+    meetingTime: 'Wednesdays 5:30 PM',
+    location: 'Math Building 302',
+    capacity: 5,
+    tags: ['Data Structures', 'Advanced', 'Java'],
+  },
+  {
+    id: '3',
+    name: 'Operating Systems Study Group',
+    course: 'CSCI 4000 - Operating Systems',
+    description: 'Intensive study group for operating systems concepts and applications.',
+    members: ['Grace Kim', 'Henry Chen', 'Isabel Rodriguez'],
+    meetingTime: 'Thursdays 3:00 PM',
+    location: 'Engineering Lab 105',
+    capacity: 8,
+    tags: ['Operating Systems', 'Advanced', 'Linux'],
+  },
+  {
+    id: '4',
+    name: 'Networking Study Group',
+    course: 'CSCI 4000 - Networking',
+    description: 'Intensive study group for networking concepts and applications.',
+    members: ['Jack Thompson', 'Kelly White'],
+    meetingTime: 'Fridays 2:00 PM',
+    location: 'Virtual (Zoom)',
+    capacity: 6,
+    tags: ['Networking', 'Advanced', 'TCP/IP'],
+  },
+];
+
+export default function StudyGroups() {
+  const [groups, setGroups] = useState(mockStudyGroups);
   const [isCreating, setIsCreating] = useState(false);
   const [newGroup, setNewGroup] = useState<Partial<StudyGroup>>({
     name: '',
+    course: '',
     description: '',
-    members: [],
-    schedule: [],
-  });
-  const [newSchedule, setNewSchedule] = useState<Partial<StudyGroupSchedule>>({
-    day_of_week: 1,
-    start_time: '09:00',
-    end_time: '10:30',
+    meetingTime: '',
     location: '',
-    recurring: true,
+    capacity: 6,
+    tags: [],
   });
 
-  useEffect(() => {
-    loadGroups();
-  }, [courseId]);
-
-  const loadGroups = async () => {
-    try {
-      setLoading(true);
-      const data = await canvasAPI.getStudyGroups(courseId);
-      setGroups(data);
-    } catch (error) {
-      console.error('Error loading study groups:', error);
-    } finally {
-      setLoading(false);
+  const handleCreate = () => {
+    if (newGroup.name && newGroup.course && newGroup.description) {
+      const group: StudyGroup = {
+        id: Date.now().toString(),
+        name: newGroup.name,
+        course: newGroup.course,
+        description: newGroup.description,
+        members: ['Current User'], // TODO: Get actual user
+        meetingTime: newGroup.meetingTime || 'TBD',
+        location: newGroup.location || 'TBD',
+        capacity: newGroup.capacity || 6,
+        tags: newGroup.tags || [],
+      };
+      setGroups([...groups, group]);
+      setIsCreating(false);
+      setNewGroup({
+        name: '',
+        course: '',
+        description: '',
+        meetingTime: '',
+        location: '',
+        capacity: 6,
+        tags: [],
+      });
     }
   };
 
-  const handleCreateGroup = async () => {
-    if (newGroup.name && newGroup.description) {
-      try {
-        const group = await canvasAPI.createStudyGroup({
-          ...newGroup as Omit<StudyGroup, 'id' | 'created_at'>,
-          course_id: courseId || 0,
-          created_by: 'Current User', // TODO: Get actual user
-        });
-        setGroups([...groups, group]);
-        setIsCreating(false);
-        setNewGroup({
-          name: '',
-          description: '',
-          members: [],
-          schedule: [],
-        });
-      } catch (error) {
-        console.error('Error creating study group:', error);
-      }
-    }
-  };
-
-  const handleAddSchedule = async (groupId: string) => {
-    if (newSchedule.location) {
-      try {
-        const updatedGroup = await canvasAPI.updateStudyGroup(groupId, {
-          schedule: [...(groups.find(g => g.id === groupId)?.schedule || []), newSchedule as StudyGroupSchedule],
-        });
-        setGroups(groups.map(g => g.id === groupId ? updatedGroup : g));
-        setNewSchedule({
-          day_of_week: 1,
-          start_time: '09:00',
-          end_time: '10:30',
-          location: '',
-          recurring: true,
-        });
-      } catch (error) {
-        console.error('Error adding schedule:', error);
-      }
-    }
-  };
-
-  const renderGroupCard = ({ item }: { item: StudyGroup }) => (
+  const renderGroup = ({ item }: { item: StudyGroup }) => (
     <Card style={styles.card}>
       <Card.Content>
-        <View style={styles.header}>
-          <Text style={styles.title}>{item.name}</Text>
-          <Button
-            mode="text"
-            onPress={() => handleAddSchedule(item.id)}
-            style={styles.addButton}
-          >
-            Add Schedule
-          </Button>
-        </View>
+        <Text style={styles.groupName}>{item.name}</Text>
+        <Text style={styles.course}>{item.course}</Text>
         <Text style={styles.description}>{item.description}</Text>
         
-        <View style={styles.scheduleSection}>
-          <Text style={styles.sectionTitle}>Schedule</Text>
-          {item.schedule.map(schedule => (
-            <List.Item
-              key={schedule.id}
-              title={`${DAYS_OF_WEEK[schedule.day_of_week]} ${schedule.start_time} - ${schedule.end_time}`}
-              description={schedule.location}
-              left={props => <List.Icon {...props} icon="calendar" />}
-            />
+        <View style={styles.details}>
+          <Text style={styles.detailText}>📅 {item.meetingTime}</Text>
+          <Text style={styles.detailText}>📍 {item.location}</Text>
+          <Text style={styles.detailText}>
+            👥 {item.members.length}/{item.capacity} members
+          </Text>
+        </View>
+
+        <View style={styles.tags}>
+          {item.tags.map((tag, index) => (
+            <Surface key={index} style={styles.tag}>
+              <Text>{tag}</Text>
+            </Surface>
           ))}
         </View>
 
-        <View style={styles.membersSection}>
-          <Text style={styles.sectionTitle}>Members</Text>
-          <Text>{item.members.length} members</Text>
+        <View style={styles.members}>
+          <Text style={styles.membersTitle}>Members:</Text>
+          <View style={styles.avatarRow}>
+            {item.members.map((member, index) => (
+              <Avatar.Text
+                key={index}
+                size={30}
+                label={member.split(' ').map(n => n[0]).join('')}
+                style={styles.avatar}
+              />
+            ))}
+          </View>
         </View>
+
+        <Button
+          mode="contained"
+          onPress={() => {/* TODO: Implement join group */}}
+          style={styles.joinButton}
+        >
+          {item.members.length >= item.capacity ? 'Group Full' : 'Join Group'}
+        </Button>
       </Card.Content>
     </Card>
   );
+
+  if (isCreating) {
+    return (
+      <View style={styles.container}>
+        <Card style={styles.createCard}>
+          <Card.Content>
+            <TextInput
+              label="Group Name"
+              value={newGroup.name}
+              onChangeText={name => setNewGroup({ ...newGroup, name })}
+              style={styles.input}
+            />
+            <TextInput
+              label="Course"
+              value={newGroup.course}
+              onChangeText={course => setNewGroup({ ...newGroup, course })}
+              style={styles.input}
+            />
+            <TextInput
+              label="Description"
+              value={newGroup.description}
+              onChangeText={description => setNewGroup({ ...newGroup, description })}
+              style={styles.input}
+            />
+            <TextInput
+              label="Meeting Time"
+              value={newGroup.meetingTime}
+              onChangeText={meetingTime => setNewGroup({ ...newGroup, meetingTime })}
+              style={styles.input}
+            />
+            <TextInput
+              label="Location"
+              value={newGroup.location}
+              onChangeText={location => setNewGroup({ ...newGroup, location })}
+              style={styles.input}
+            />
+            <View style={styles.buttonContainer}>
+              <Button
+                mode="outlined"
+                onPress={() => setIsCreating(false)}
+                style={styles.cancelButton}
+              >
+                Cancel
+              </Button>
+              <Button
+                mode="contained"
+                onPress={handleCreate}
+                style={styles.createButton}
+              >
+                Create Group
+              </Button>
+            </View>
+          </Card.Content>
+        </Card>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <FlatList
         data={groups}
-        renderItem={renderGroupCard}
+        renderItem={renderGroup}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
-        refreshing={loading}
-        onRefresh={loadGroups}
+        showsVerticalScrollIndicator={false}
       />
-
-      {isCreating && (
-        <Surface style={styles.modal}>
-          <Text style={styles.modalTitle}>Create Study Group</Text>
-          <TextInput
-            label="Group Name"
-            value={newGroup.name}
-            onChangeText={name => setNewGroup({ ...newGroup, name })}
-            style={styles.input}
-          />
-          <TextInput
-            label="Description"
-            value={newGroup.description}
-            onChangeText={description => setNewGroup({ ...newGroup, description })}
-            style={styles.input}
-          />
-          <View style={styles.buttonContainer}>
-            <Button 
-              mode="outlined" 
-              onPress={() => setIsCreating(false)}
-              style={styles.cancelButton}
-            >
-              Cancel
-            </Button>
-            <Button 
-              mode="contained" 
-              onPress={handleCreateGroup}
-              style={styles.createButton}
-            >
-              Create Group
-            </Button>
-          </View>
-        </Surface>
-      )}
-
       <FAB
         icon="plus"
         style={styles.fab}
@@ -177,56 +232,74 @@ const styles = StyleSheet.create({
   },
   list: {
     padding: 16,
+    paddingBottom: 80,
   },
   card: {
     marginBottom: 16,
+    elevation: 2,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 18,
+  groupName: {
+    fontSize: 20,
     fontWeight: 'bold',
-    flex: 1,
+    marginBottom: 4,
+  },
+  course: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 8,
   },
   description: {
     fontSize: 14,
-    color: '#666',
     marginBottom: 16,
   },
-  scheduleSection: {
+  details: {
     marginBottom: 16,
   },
-  sectionTitle: {
-    fontSize: 16,
+  detailText: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: '#444',
+  },
+  tags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 16,
+  },
+  tag: {
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  members: {
+    marginBottom: 16,
+  },
+  membersTitle: {
+    fontSize: 14,
     fontWeight: '500',
     marginBottom: 8,
   },
-  membersSection: {
+  avatarRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  avatar: {
+    marginRight: 8,
+    backgroundColor: '#4299E1',
+  },
+  joinButton: {
     marginTop: 8,
   },
-  modal: {
-    backgroundColor: 'white',
-    padding: 20,
-    margin: 20,
-    borderRadius: 8,
-    elevation: 4,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  createCard: {
+    margin: 16,
+    elevation: 2,
   },
   input: {
     marginBottom: 12,
+    backgroundColor: '#fff',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 8,
+    marginTop: 16,
   },
   cancelButton: {
     marginRight: 8,
@@ -236,11 +309,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-  addButton: {
-    marginLeft: 8,
+    right: 16,
+    bottom: 16,
+    backgroundColor: '#4299E1',
   },
 }); 

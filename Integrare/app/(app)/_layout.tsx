@@ -12,30 +12,35 @@ export default function AppLayout() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerTitleAlign: 'center',
       }}
     >
       <Stack.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: 'Welcome to Integrare',
+          headerShown: true,
         }}
       />
       <Stack.Screen
         name="career"
         options={{
           title: 'Career Development',
+          headerShown: true,
         }}
       />
       <Stack.Screen
         name="collaborative"
         options={{
           title: 'Collaborative Learning',
+          headerShown: true,
         }}
       />
       <Stack.Screen
         name="course/[id]"
         options={{
           title: 'Course Details',
+          headerShown: true,
         }}
       />
     </Stack>

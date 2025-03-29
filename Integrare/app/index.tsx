@@ -1,6 +1,5 @@
-import { View } from 'react-native';
-import DashboardScreen from './screens/DashboardScreen';
+import { Redirect } from 'expo-router';
 
 export default function Index() {
-  return <DashboardScreen />;
+  return <Redirect href="/login" />;
 } 

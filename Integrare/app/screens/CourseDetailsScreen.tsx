@@ -9,10 +9,12 @@ import {
   ScrollView,
   RefreshControl
 } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { canvasAPI, CanvasAssignment, CanvasAnnouncement } from '../api/canvasAPI';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CourseDetailsScreen() {
+  const router = useRouter();
   const params = useLocalSearchParams<{ id: string; name: string }>();
   const courseId = parseInt(params.id);
   const courseName = params.name;
@@ -54,52 +56,72 @@ export default function CourseDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#4299E1" />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>{courseName}</Text>
+        </View>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color="#4299E1" />
+        </View>
       </View>
     );
   }
 
   return (
-    <ScrollView 
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <Text style={styles.courseTitle}>{courseName}</Text>
-
-      {/* Announcements Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Announcements</Text>
-        {announcements.map(announcement => (
-          <View key={announcement.id} style={styles.announcementCard}>
-            <Text style={styles.announcementTitle}>{announcement.title}</Text>
-            <Text style={styles.announcementContent}>{announcement.message}</Text>
-            <Text style={styles.announcementDate}>
-              Posted: {formatDate(announcement.posted_at)}
-            </Text>
-          </View>
-        ))}
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{courseName}</Text>
       </View>
+      <ScrollView 
+        style={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {/* Announcements Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Announcements</Text>
+          {announcements.map(announcement => (
+            <View key={announcement.id} style={styles.announcementCard}>
+              <Text style={styles.announcementTitle}>{announcement.title}</Text>
+              <Text style={styles.announcementContent}>{announcement.message}</Text>
+              <Text style={styles.announcementDate}>
+                Posted: {formatDate(announcement.posted_at)}
+              </Text>
+            </View>
+          ))}
+        </View>
 
-      {/* Assignments Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Assignments</Text>
-        {assignments.map(assignment => (
-          <TouchableOpacity
-            key={assignment.id}
-            style={styles.assignmentCard}
-            onPress={() => {/* TODO: Navigate to assignment details */}}
-          >
-            <Text style={styles.assignmentTitle}>{assignment.name}</Text>
-            <Text style={styles.assignmentDue}>
-              Due: {formatDate(assignment.due_at)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+        {/* Assignments Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Assignments</Text>
+          {assignments.map(assignment => (
+            <TouchableOpacity
+              key={assignment.id}
+              style={styles.assignmentCard}
+              onPress={() => {/* TODO: Navigate to assignment details */}}
+            >
+              <Text style={styles.assignmentTitle}>{assignment.name}</Text>
+              <Text style={styles.assignmentDue}>
+                Due: {formatDate(assignment.due_at)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -108,17 +130,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  header: {
+    backgroundColor: '#fff',
+    elevation: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 24,
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+  },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  courseTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    padding: 16,
-    backgroundColor: '#fff',
-    marginBottom: 8,
   },
   section: {
     padding: 16,

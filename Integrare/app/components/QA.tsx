@@ -51,6 +51,135 @@ const mockQuestions: Question[] = [
   // Add more mock questions as needed
 ];
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  list: {
+    padding: 16,
+    paddingBottom: 80, // Add padding for FAB
+  },
+  card: {
+    marginBottom: 16,
+    elevation: 2,
+  },
+  questionHeader: {
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  avatar: {
+    marginRight: 12,
+    backgroundColor: '#4299E1',
+  },
+  questionMeta: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  author: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  course: {
+    fontSize: 14,
+    color: '#666',
+  },
+  date: {
+    fontSize: 12,
+    color: '#999',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  content: {
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  answersSection: {
+    marginTop: 16,
+  },
+  answersTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 12,
+  },
+  answerCard: {
+    marginBottom: 12,
+    backgroundColor: '#fafafa',
+  },
+  answerHeader: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  answerAvatar: {
+    marginRight: 8,
+    backgroundColor: '#718096',
+  },
+  answerMeta: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  answerAuthor: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  answerDate: {
+    fontSize: 12,
+    color: '#999',
+  },
+  answerContent: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  answerFooter: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  answerInput: {
+    marginTop: 16,
+  },
+  input: {
+    marginBottom: 12,
+    backgroundColor: '#fff',
+  },
+  multilineInput: {
+    marginBottom: 12,
+    backgroundColor: '#fff',
+    minHeight: 100,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 16,
+  },
+  answerButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 8,
+  },
+  cancelButton: {
+    marginRight: 8,
+  },
+  submitButton: {
+    marginLeft: 8,
+  },
+  addAnswerButton: {
+    marginTop: 16,
+  },
+  createCard: {
+    margin: 16,
+    elevation: 2,
+  },
+  fab: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16,
+    backgroundColor: '#4299E1',
+  },
+});
+
 export default function QA() {
   const [questions, setQuestions] = useState(mockQuestions);
   const [isCreating, setIsCreating] = useState(false);
@@ -59,6 +188,8 @@ export default function QA() {
     content: '',
     course: '',
   });
+  const [answerText, setAnswerText] = useState('');
+  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
 
   const handleCreateQuestion = () => {
     if (newQuestion.title && newQuestion.content && newQuestion.course) {
@@ -148,35 +279,56 @@ export default function QA() {
           ))}
         </View>
 
-        <View style={styles.answerInput}>
-          <TextInput
-            label="Your answer"
-            value=""
-            onChangeText={(text) => handleAddAnswer(item.id, text)}
-            style={styles.multilineInput}
-          />
+        {activeQuestionId === item.id ? (
+          <View style={styles.answerInput}>
+            <TextInput
+              label="Your answer"
+              value={answerText}
+              onChangeText={setAnswerText}
+              style={styles.multilineInput}
+            />
+            <View style={styles.answerButtons}>
+              <Button 
+                mode="outlined" 
+                onPress={() => {
+                  setActiveQuestionId(null);
+                  setAnswerText('');
+                }}
+                style={styles.cancelButton}
+              >
+                Cancel
+              </Button>
+              <Button 
+                mode="contained" 
+                onPress={() => {
+                  if (answerText.trim()) {
+                    handleAddAnswer(item.id, answerText);
+                    setActiveQuestionId(null);
+                    setAnswerText('');
+                  }
+                }}
+                style={styles.submitButton}
+              >
+                Submit Answer
+              </Button>
+            </View>
+          </View>
+        ) : (
           <Button 
-            mode="contained" 
-            onPress={() => {/* TODO: Implement answer submission */}}
-            style={styles.submitButton}
+            mode="outlined" 
+            onPress={() => setActiveQuestionId(item.id)}
+            style={styles.addAnswerButton}
           >
-            Submit Answer
+            Add Answer
           </Button>
-        </View>
+        )}
       </Card.Content>
     </Card>
   );
 
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={questions}
-        renderItem={renderQuestion}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.list}
-      />
-
-      {isCreating && (
+  if (isCreating) {
+    return (
+      <View style={styles.container}>
         <Card style={styles.createCard}>
           <Card.Content>
             <TextInput
@@ -207,16 +359,31 @@ export default function QA() {
               </Button>
               <Button 
                 mode="contained" 
-                onPress={handleCreateQuestion}
-                style={styles.createButton}
+                onPress={() => {
+                  if (newQuestion.title && newQuestion.content && newQuestion.course) {
+                    handleCreateQuestion();
+                  }
+                }}
+                style={styles.submitButton}
               >
                 Post Question
               </Button>
             </View>
           </Card.Content>
         </Card>
-      )}
+      </View>
+    );
+  }
 
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={questions}
+        renderItem={renderQuestion}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+      />
       <FAB
         icon="plus"
         style={styles.fab}
@@ -224,129 +391,4 @@ export default function QA() {
       />
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  list: {
-    padding: 16,
-  },
-  card: {
-    marginBottom: 16,
-  },
-  questionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avatar: {
-    marginRight: 12,
-  },
-  questionMeta: {
-    flex: 1,
-  },
-  author: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  course: {
-    fontSize: 14,
-    color: '#666',
-  },
-  date: {
-    fontSize: 12,
-    color: '#999',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  content: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 16,
-  },
-  answersSection: {
-    marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    paddingTop: 16,
-  },
-  answersTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  answerCard: {
-    marginBottom: 12,
-  },
-  answerHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  answerAvatar: {
-    marginRight: 8,
-  },
-  answerMeta: {
-    flex: 1,
-  },
-  answerAuthor: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  answerDate: {
-    fontSize: 12,
-    color: '#999',
-  },
-  answerContent: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 8,
-  },
-  answerFooter: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  answerInput: {
-    marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    paddingTop: 16,
-  },
-  input: {
-    marginBottom: 12,
-  },
-  submitButton: {
-    marginTop: 8,
-  },
-  createCard: {
-    margin: 16,
-    marginTop: 8,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 8,
-  },
-  cancelButton: {
-    marginRight: 8,
-  },
-  createButton: {
-    marginLeft: 8,
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-  multilineInput: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-}); 
+} 
