@@ -124,7 +124,7 @@ export interface CanvasUser {
       course_id: 1001,
       name: "Assignment 1: Variables and Control Flow",
       description: "Implement basic control flow structures in Java.",
-      due_at: "2025-02-01T23:59:59Z",
+      due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload"]
     },
@@ -133,7 +133,7 @@ export interface CanvasUser {
       course_id: 1001,
       name: "Assignment 2: Classes and Objects",
       description: "Create classes with proper encapsulation.",
-      due_at: "2025-02-15T23:59:59Z",
+      due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload"]
     },
@@ -142,7 +142,7 @@ export interface CanvasUser {
       course_id: 1002,
       name: "Project 1: Linked Lists",
       description: "Implement a doubly-linked list with iterators.",
-      due_at: "2025-02-10T23:59:59Z",
+      due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload", "online_text_entry"]
     },
@@ -151,7 +151,7 @@ export interface CanvasUser {
       course_id: 1002,
       name: "Project 2: Binary Search Trees",
       description: "Implement a binary search tree with common operations.",
-      due_at: "2025-03-01T23:59:59Z",
+      due_at: "2025-03-30T23:59:59Z",
       points_possible: 100,
       submission_types: ["online_upload"]
     },
@@ -160,9 +160,18 @@ export interface CanvasUser {
       course_id: 1003,
       name: "Lab 1: Linear Regression",
       description: "Implement linear regression from scratch.",
-      due_at: "2025-02-05T23:59:59Z",
+      due_at: "2025-03-30T23:59:59Z",
       points_possible: 50,
       submission_types: ["online_upload", "online_text_entry"]
+    },
+    {
+      id:2006,
+      course_id: 1004,
+      name:"Project 1: Create a Group Chat App",
+      description: "Implement",
+      due_at: "2025-03-30T23:59:59Z",
+      points_possible: 100,
+      submission_types:["online_upload"]
     }
   ];
   
