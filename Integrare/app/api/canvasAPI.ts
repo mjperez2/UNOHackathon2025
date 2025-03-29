@@ -196,7 +196,7 @@ export interface CanvasUser {
     {
       id: '1',
       course_id: 1001,
-      name: 'CS I Study Group',
+      name: 'CSCI 2125 Study Group',
       description: 'Weekly study sessions for CS I',
       members: ['user1', 'user2', 'user3'],
       schedule: [
@@ -219,8 +219,8 @@ export interface CanvasUser {
     {
       id: '1',
       course_id: 1001,
-      name: 'CS I Discussion',
-      description: 'General discussion for CS I students',
+      name: 'CSCI 2125 Discussion',
+      description: 'General discussion for CSCI 2125 students',
       announcements: [
         {
           id: '1',
